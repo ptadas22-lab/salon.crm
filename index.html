@@ -135,3 +135,21 @@ fetchClients();
 
 </body>
 </html>
+<p style="font-size:12px;color:gray;">
+Your data is securely stored and accessible only to you.
+</p>
+<h2>Salon Client Manager</h2>
+<h2>BookIt - Salon Client Manager</h2>
+if (res.ok) {
+  alert("Client added ✅");
+  fetchClients();
+}
+if (res.ok) {
+  alert("Client added ✅");
+  fetchClients();
+
+  document.getElementById("clientName").value = "";
+  document.getElementById("clientPhone").value = "";
+  document.getElementById("clientNotes").value = "";
+}
+
