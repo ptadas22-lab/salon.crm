@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Salon CRM</title>
+</head>
+
+<body>
+
+<h2>Salon Client Manager</h2>
+
+<input id="clientName" placeholder="Name"><br><br>
+<input id="clientPhone" placeholder="Phone"><br><br>
+<input id="clientNotes" placeholder="Notes"><br><br>
+
+<button onclick="addClient()">Add Client</button>
+
+<h3>Client List</h3>
+<ul id="clientContainer"></ul>
+
+<script>
+async function addClient() {
+  let name = document.getElementById("clientName").value;
+  let phone = document.getElementById("clientPhone").value;
+  let notes = document.getElementById("clientNotes").value;
+
+  if (!name || !phone) {
+    alert("Enter name and phone");
+    return;
+  }
+
+  let res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
+      "Authorization": "Bearer sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n"
+    },
+    body: JSON.stringify({
+      name: name,
+      phone: phone,
+      notes: notes,
+      visits: 1
+    })
+  });
+
+  if (res.ok) {
+    alert("Client added ✅");
+    fetchClients();
+  } else {
+    let err = await res.text();
+    alert("Error: " + err);
+  }
+}
+
+async function fetchClients() {
+  let res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients", {
+    headers: {
+      "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
+      "Authorization": "Bearer sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n"
+    }
+  });
+
+  let data = await res.json();
+
+  let container = document.getElementById("clientContainer");
+  container.innerHTML = "";
+
+  data.forEach(c => {
+    container.innerHTML += `
+      <li style="margin-bottom:10px;">
+        <b>${c.name}</b><br>
+        📞 ${c.phone}<br>
+        📝 ${c.notes}<br>
+        <button onclick="deleteClient(${c.id})">Delete</button>
+        <button onclick="editClient(${c.id}, '${c.name}', '${c.phone}', '${c.notes}')">Edit</button>
+      </li>
+    `;
+  });
+}
+
+async function deleteClient(id) {
+  let confirmDelete = confirm("Delete this client?");
+  if (!confirmDelete) return;
+
+  let res = await fetch(`https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients?id=eq.${id}`, {
+    method: "DELETE",
+    headers: {
+      "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
+      "Authorization": "Bearer sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n"
+    }
+  });
+
+  if (res.ok) {
+    alert("Deleted ✅");
+    fetchClients();
+  } else {
+    let err = await res.text();
+    alert("Error: " + err);
+  }
+}
+
+async function editClient(id, oldName, oldPhone, oldNotes) {
+  let name = prompt("Edit Name", oldName);
+  let phone = prompt("Edit Phone", oldPhone);
+  let notes = prompt("Edit Notes", oldNotes);
+
+  if (!name || !phone) return;
+
+  let res = await fetch(`https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients?id=eq.${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
+      "Authorization": "Bearer sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n"
+    },
+    body: JSON.stringify({
+      name: name,
+      phone: phone,
+      notes: notes
+    })
+  });
+
+  if (res.ok) {
+    alert("Updated ✅");
+    fetchClients();
+  } else {
+    let err = await res.text();
+    alert("Error: " + err);
+  }
+}
+
+// load data when page opens
+fetchClients();
+</script>
+
+</body>
+</html>
