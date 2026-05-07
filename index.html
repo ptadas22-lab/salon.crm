@@ -6,7 +6,11 @@
 
 <body>
 
-<h2>Salon Client Manager</h2>
+<h2>BookIt - Salon Client Manager</h2>
+
+<p style="font-size:12px;color:gray;">
+Your data is securely stored and accessible only to you.
+</p>
 
 <input id="clientName" placeholder="Name"><br><br>
 <input id="clientPhone" placeholder="Phone"><br><br>
@@ -46,6 +50,10 @@ async function addClient() {
   if (res.ok) {
     alert("Client added ✅");
     fetchClients();
+
+    document.getElementById("clientName").value = "";
+    document.getElementById("clientPhone").value = "";
+    document.getElementById("clientNotes").value = "";
   } else {
     let err = await res.text();
     alert("Error: " + err);
@@ -82,7 +90,7 @@ async function deleteClient(id) {
   let confirmDelete = confirm("Delete this client?");
   if (!confirmDelete) return;
 
-  let res = await fetch(`https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients?id=eq.${id}`, {
+  let res = await fetch(\`https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients?id=eq.\${id}\`, {
     method: "DELETE",
     headers: {
       "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
@@ -106,7 +114,7 @@ async function editClient(id, oldName, oldPhone, oldNotes) {
 
   if (!name || !phone) return;
 
-  let res = await fetch(`https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients?id=eq.${id}`, {
+  let res = await fetch(\`https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients?id=eq.\${id}\`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -129,27 +137,8 @@ async function editClient(id, oldName, oldPhone, oldNotes) {
   }
 }
 
-// load data when page opens
 fetchClients();
 </script>
 
 </body>
 </html>
-<p style="font-size:12px;color:gray;">
-Your data is securely stored and accessible only to you.
-</p>
-<h2>Salon Client Manager</h2>
-<h2>BookIt - Salon Client Manager</h2>
-if (res.ok) {
-  alert("Client added ✅");
-  fetchClients();
-}
-if (res.ok) {
-  alert("Client added ✅");
-  fetchClients();
-
-  document.getElementById("clientName").value = "";
-  document.getElementById("clientPhone").value = "";
-  document.getElementById("clientNotes").value = "";
-}
-
